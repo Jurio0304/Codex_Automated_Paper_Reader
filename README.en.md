@@ -180,22 +180,9 @@ Run the test suite from `paper-daily`:
 python -m pytest tests
 ```
 
-## Publishing Notes
-
-Before making the repository public, avoid committing:
-
-- local virtual environments
-- logs
-- fetched raw data
-- generated reports
-- local prompt files with machine-specific paths or private screening preferences
-
-The root `.gitignore` is configured for this.
 
 ## Project Status
 
 CAPR is an early research automation tool. The current focus is reliability, transparent candidate retrieval, and keeping the final literature review human/Codex-readable rather than template-generated.
 
-## License
 
-No open-source license has been selected yet. Consider adding MIT, Apache-2.0, or another suitable license before public release.
