@@ -116,7 +116,6 @@ cp ../Paper_Reader.template.en.txt ../Paper_Reader.txt
 
 3. 在 Codex 中创建定时自动化任务，例如每天早上 8:00 运行一次。
 
-`Paper_Reader.txt` 默认被 `.gitignore` 忽略，因为它通常包含机器相关路径和私有筛选偏好。公开仓库只保留中英文模板文件。
 
 
 ## 候选文件格式
