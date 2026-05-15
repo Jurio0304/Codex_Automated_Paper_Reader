@@ -1,0 +1,136 @@
+# Paper Reader Automation Prompt Template (English)
+
+Project role:
+- `paper-daily` is only the candidate-retrieval tool, not a report generator.
+- Codex must act as the research assistant: read candidates, score papers semantically, rank them, summarize them, and write the final report.
+
+Execution mode:
+- Use Codex standalone automation.
+- If the automation allows a `cwd`, set it to your local `paper-daily` directory.
+- Do not switch to another project with a similar name or an old path.
+
+Local working directory:
+<ABSOLUTE_PATH_TO_THIS_REPO>/paper-daily
+
+Path requirements:
+- Treat all relative paths as relative to the `paper-daily` directory.
+- Use the Python executable for your machine, for example:
+  python
+  or
+  <ABSOLUTE_PATH_TO_PYTHON>
+
+Step 1: fetch candidates only. Do not let the script generate a report.
+python scripts/daily_papers.py --config config.yaml --date today --stage fetch --force
+
+Network preflight requirements:
+- The script first checks core URLs such as `export.arxiv.org`, `arxiv.org`, `openreview.net`, and `api2.openreview.net`.
+- If network preflight fails, stop the automation immediately and report the network error.
+- Do not continue to scoring, do not write an empty report, and do not pretend an old candidate pool is today's result.
+
+Candidate file:
+- After fetch completes, read the candidate path printed by the command, usually:
+  data/processed/YYYY-MM-DD_candidates.json
+
+If fetch fails or the candidate pool is empty:
+- Check `logs/YYYY-MM-DD.log`, `data/raw/YYYY-MM-DD.json`, and `data/processed/YYYY-MM-DD_candidates.json`.
+- If the cause is network, proxy, arXiv, or OpenReview failure, do not write a generic empty report.
+- Report the failed command, reason, generated files, candidate count, and suggested fix.
+- Only use an older non-empty candidate file when the user explicitly requests fallback, and label the report as a backfill run with the source date.
+
+Research background:
+<WRITE_YOUR_RESEARCH_BACKGROUND_HERE>
+
+Recommendation principles:
+- Prefer general AI method papers that can transfer to the research problem.
+- Do not rank a paper highly only because it contains a domain keyword.
+- Adjacent-area papers can rank highly if their methods are transferable.
+- For direct-domain papers, still evaluate method contribution, experiment quality, and reusable value.
+
+Focus topics:
+<WRITE_YOUR_FOCUS_TOPICS_HERE>
+
+Negative topics:
+<WRITE_YOUR_NEGATIVE_TOPICS_HERE>
+
+Scoring dimensions, each 0-5:
+- Methodological Relevance
+- Inspiration Value
+- Transferability to My Research
+- Paper Quality
+- Novelty / Timeliness
+- Actionability
+
+Final Score =
+0.25 * Methodological Relevance
++ 0.25 * Inspiration Value
++ 0.20 * Transferability to My Research
++ 0.15 * Paper Quality
++ 0.10 * Novelty / Timeliness
++ 0.05 * Actionability
+
+Save scores to:
+data/processed/YYYY-MM-DD_scored.json
+
+Suggested schema:
+{
+  "date": "YYYY-MM-DD",
+  "status": "ok",
+  "generated_at": "...",
+  "candidate_path": "...",
+  "candidate_count": 0,
+  "deep_read_ids": [],
+  "top10_ids": [],
+  "papers": [
+    {
+      "...original candidate fields": "...",
+      "semantic_scores": {
+        "methodological_relevance": 0,
+        "inspiration_value": 0,
+        "transferability_to_my_research": 0,
+        "paper_quality": 0,
+        "novelty_timeliness": 0,
+        "actionability": 0,
+        "final_score": 0
+      },
+      "selected_for_deep_read": false,
+      "selected_for_top10": false,
+      "reading_evidence": "abstract-only / paper page / pdf",
+      "semantic_rank": 0
+    }
+  ]
+}
+
+Reading workflow:
+1. Read candidates.json and score each paper using title, abstract, venue/categories, and retrieval_reason.
+2. Select about 15 high-scoring papers for deeper reading.
+3. For the final Top 10, open the paper page or PDF when possible and inspect abstract, introduction, method, experiments, and conclusion.
+4. If only abstract-level evidence is available, state this explicitly in `reading_evidence` and in the report.
+5. Do not invent information that is not supported by the candidate metadata, web page, or PDF.
+
+Report output:
+Write a Markdown report to:
+reports/YYYY-MM-DD.md
+
+The report should include:
+- Overview
+- Top 10 Papers
+- For each paper: method, transfer value, actionable experiment/module, limitation, reading advice, evidence source
+- Trends of the day
+- Potential research ideas
+- Papers worth adding to related work
+
+Final response:
+- Candidate count
+- Top 10 titles
+- scored.json path
+- report path
+- Any network/source/read-depth limitations
+
+Prohibited:
+- Do not stop after running the script.
+- Do not generate the final report from keyword templates.
+- Do not summarize papers without reading candidate content.
+- Do not use repetitive boilerplate.
+- Do not rank a paper highly only because it contains a domain keyword.
+- Do not invent information not supported by the abstract/page/PDF.
+- Do not git push automatically.

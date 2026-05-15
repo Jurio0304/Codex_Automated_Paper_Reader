@@ -1,49 +1,58 @@
-Project role:
-- `paper-daily` is only the candidate-retrieval tool.
-- Codex must act as the research assistant: read candidates, score papers, rank them, and write the final report.
+# Paper Reader 自动化 Prompt 模板（中文）
 
-Execution mode:
-- Use standalone automation.
-- If the automation allows a `cwd`, set it to your local `paper-daily` directory.
-- Do not switch to another project with a similar name.
+项目定位：
+- `paper-daily` 只是候选检索脚本工具，不是日报生成器。
+- Codex 必须作为科研助理阅读候选、语义评分、排序、总结，并写入最终日报。
 
-Local working directory:
+运行方式：
+- 使用 Codex standalone automation。
+- 如果自动化配置可以指定 `cwd`，请设为你的本地 `paper-daily` 目录。
+- 不要切换到其他同名或旧路径项目。
+
+本地路径：
 <ABSOLUTE_PATH_TO_THIS_REPO>/paper-daily
 
-Path requirements:
-- Treat all relative paths as relative to the `paper-daily` directory.
-- Use the Python executable for your machine, for example:
+路径要求：
+- 所有相对路径都必须以 `paper-daily` 目录为基准。
+- 使用你的 Python 可执行文件，例如：
   python
-  or
+  或
   <ABSOLUTE_PATH_TO_PYTHON>
 
-Step 1: fetch candidates only. Do not let the script generate a report.
+第一步：只运行候选检索，不要让脚本生成日报：
 python scripts/daily_papers.py --config config.yaml --date today --stage fetch --force
 
-The script first checks core network URLs such as `export.arxiv.org`, `arxiv.org`, `openreview.net`, and `api2.openreview.net`.
-If network preflight fails, stop the automation and report the network error. Do not continue to scoring or report writing.
+网络预检要求：
+- 脚本会先检测 `export.arxiv.org`、`arxiv.org`、`openreview.net`、`api2.openreview.net` 等核心网址。
+- 如果网络预检失败，立即停止自动化并报告网络错误。
+- 不要继续评分，不要写空日报，不要用旧候选池冒充当天结果。
 
-After fetch completes, read:
-data/processed/YYYY-MM-DD_candidates.json
+候选文件：
+- fetch 完成后读取命令输出中的候选文件路径，通常是：
+  data/processed/YYYY-MM-DD_candidates.json
 
-If fetch fails or the candidate pool is empty:
-- Check `logs/YYYY-MM-DD.log`, `data/raw/YYYY-MM-DD.json`, and `data/processed/YYYY-MM-DD_candidates.json`.
-- If the cause is network/proxy/arXiv/OpenReview failure, do not write a generic empty report.
-- Report the failed command, reason, generated files, candidate count, and suggested fix.
-- Only use an older non-empty candidate file when explicitly requested, and label the report as a backfill run.
+如果 fetch 失败或候选池为空：
+- 检查 `logs/YYYY-MM-DD.log`、`data/raw/YYYY-MM-DD.json` 和 `data/processed/YYYY-MM-DD_candidates.json`。
+- 如果原因是网络、代理、arXiv 或 OpenReview 访问失败，不要写泛化空日报。
+- 报告失败命令、错误原因、已生成文件、候选数量和建议修复方案。
+- 只有在用户明确要求 fallback 时，才可使用最近一个非空 candidates 文件生成补跑日报，并在报告开头标明来源日期。
 
-Research background:
+研究背景：
 <WRITE_YOUR_RESEARCH_BACKGROUND_HERE>
 
-Recommendation principle:
-- Prefer general AI method papers that can transfer to your research.
-- Do not rank a paper highly only because it contains a domain keyword.
-- Papers from adjacent areas can rank highly if their methods are transferable.
+推荐原则：
+- 优先推荐能迁移到研究问题中的通用 AI 方法论文。
+- 不要只因为论文包含领域关键词就给高分。
+- 相邻领域论文只要方法可迁移，也可以高分。
+- 对直接领域论文也要看方法贡献、实验质量和可复用价值。
 
-Focus topics:
+重点关注：
 <WRITE_YOUR_FOCUS_TOPICS_HERE>
 
-Scoring dimensions, each 0-5:
+负向过滤：
+<WRITE_YOUR_NEGATIVE_TOPICS_HERE>
+
+评分维度，每项 0-5：
 - Methodological Relevance
 - Inspiration Value
 - Transferability to My Research
@@ -51,6 +60,7 @@ Scoring dimensions, each 0-5:
 - Novelty / Timeliness
 - Actionability
 
+综合分：
 Final Score =
 0.25 * Methodological Relevance
 + 0.25 * Inspiration Value
@@ -59,10 +69,11 @@ Final Score =
 + 0.10 * Novelty / Timeliness
 + 0.05 * Actionability
 
-Save scores to:
+评分输出：
+保存到：
 data/processed/YYYY-MM-DD_scored.json
 
-Suggested score schema:
+建议结构：
 {
   "date": "YYYY-MM-DD",
   "status": "ok",
@@ -73,7 +84,7 @@ Suggested score schema:
   "top10_ids": [],
   "papers": [
     {
-      "...original candidate fields": "...",
+      "...原始候选字段": "...",
       "semantic_scores": {
         "methodological_relevance": 0,
         "inspiration_value": 0,
@@ -91,37 +102,37 @@ Suggested score schema:
   ]
 }
 
-Reading workflow:
-1. Read candidates.json and score papers using title, abstract, venue/categories, and retrieval_reason.
-2. Select about 15 high-scoring papers for deeper reading.
-3. For the final Top 10, open the paper page or PDF when possible and inspect abstract, introduction, method, experiments, and conclusion.
-4. If only abstract-level evidence is available, say so explicitly in `reading_evidence` and in the report.
-5. Do not invent unsupported details.
+阅读流程：
+1. 读取 candidates.json，先基于 title、abstract、venue/categories、retrieval_reason 做逐篇语义评分。
+2. 从高分候选中选择约 15 篇进一步阅读。
+3. 对最终 Top 10 尽量打开论文页面或 PDF，阅读 abstract、introduction、method、experiments、conclusion。
+4. 如果只能基于 abstract 判断，必须在 `reading_evidence` 和日报中明确写明。
+5. 不要编造候选、网页或 PDF 中无法支持的信息。
 
-Report output:
-Write a Markdown report to:
+日报输出：
+写入：
 reports/YYYY-MM-DD.md
 
-The report should include:
-- Overview
+日报建议包含：
+- 今日概览
 - Top 10 Papers
-- For each paper: method, transfer value, actionable experiment/module, limitation, reading advice, evidence source
-- Trends of the day
-- Potential research ideas
-- Papers worth adding to related work
+- 每篇论文的核心方法、迁移价值、可转化实验/模块、局限、阅读建议、证据来源
+- 今日重点趋势
+- 潜在研究 idea
+- 值得加入 related work 的论文
 
-Final response:
-- Candidate count
-- Top 10 titles
-- scored.json path
-- report path
-- Any network/source/read-depth limitations
+最后回复用户：
+- 今日候选数量
+- Top 10 标题
+- scored.json 路径
+- 日报路径
+- 任何失败源、网络/代理问题或 abstract-only 限制
 
-Prohibited:
-- Do not stop after running the script.
-- Do not generate the final report from keyword templates.
-- Do not summarize papers without reading candidate content.
-- Do not use repetitive boilerplate.
-- Do not rank a paper highly only because it contains a domain keyword.
-- Do not invent information not supported by the abstract/page/PDF.
-- Do not git push automatically.
+禁止：
+- 禁止只调用脚本就结束。
+- 禁止直接使用关键词模板生成最终报告。
+- 禁止没阅读候选内容就总结。
+- 禁止生成大量重复套话。
+- 禁止因为论文命中领域关键词就给高分。
+- 禁止编造 PDF 或正文中没有的信息。
+- 禁止自动 git push。

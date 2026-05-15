@@ -28,7 +28,9 @@ The core principle is intentional: the Python scripts do not write the final lit
 Codex_Automated_Paper_Reader/
 ├── README.md
 ├── README.en.md
-├── Paper_Reader.template.txt
+├── Paper_Reader.template.txt       # Chinese automation prompt template
+├── Paper_Reader.template.en.txt    # English automation prompt template
+├── LICENSE
 └── paper-daily/
     ├── config.yaml
     ├── requirements.txt
@@ -96,10 +98,14 @@ This command only creates the candidate pool. It does not write the final daily 
 
 CAPR is designed for Codex standalone automation.
 
-1. Copy the public template:
+1. Copy one of the public templates. The Chinese template is the default, and an English template is available when needed:
 
 ```bash
+# Chinese template
 cp ../Paper_Reader.template.txt ../Paper_Reader.txt
+
+# English template
+cp ../Paper_Reader.template.en.txt ../Paper_Reader.txt
 ```
 
 2. Edit `Paper_Reader.txt` locally:
@@ -110,7 +116,7 @@ cp ../Paper_Reader.template.txt ../Paper_Reader.txt
 
 3. Schedule the prompt as a Codex automation.
 
-The local `Paper_Reader.txt` file is ignored by Git because it usually contains machine-specific paths and private screening preferences. The public repository only includes `Paper_Reader.template.txt`.
+The local `Paper_Reader.txt` file is ignored by Git because it usually contains machine-specific paths and private screening preferences. The public repository only includes the Chinese and English template files.
 
 ## Candidate Schema
 
@@ -185,4 +191,6 @@ python -m pytest tests
 
 CAPR is an early research automation tool. The current focus is reliability, transparent candidate retrieval, and keeping the final literature review human/Codex-readable rather than template-generated.
 
+## License
 
+This project is licensed under the MIT License. See [LICENSE](LICENSE).
