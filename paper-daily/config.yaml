@@ -1,0 +1,145 @@
+research_profile:
+  language: en
+  goal: >
+    Find general AI method papers that may inspire machine learning research,
+    time-series modeling, sequence modeling, multimodal learning, adaptation,
+    calibration, uncertainty modeling, and robust deployment.
+  background_topics:
+    - machine learning
+    - representation learning
+    - sequence modeling
+    - time-series modeling
+    - multimodal learning
+    - uncertainty modeling
+    - calibration
+    - test-time adaptation
+    - continual learning
+    - domain adaptation
+    - distribution shift
+  positive_keywords:
+    - representation learning
+    - disentangled representation
+    - invariant representation
+    - equivariant representation
+    - contrastive learning
+    - self-supervised learning
+    - masked modeling
+    - masked autoencoder
+    - latent variable model
+    - prototype learning
+    - metric learning
+    - sequence modeling
+    - temporal modeling
+    - long-context modeling
+    - state space model
+    - recurrent model
+    - temporal attention
+    - alignment modeling
+    - CTC
+    - transducer
+    - sequence-to-sequence
+    - uncertainty estimation
+    - aleatoric uncertainty
+    - epistemic uncertainty
+    - calibration
+    - conformal prediction
+    - robust learning
+    - out-of-distribution
+    - noisy label learning
+    - confidence estimation
+    - online adaptation
+    - test-time adaptation
+    - continual learning
+    - domain adaptation
+    - domain generalization
+    - distribution shift
+    - representation drift
+    - non-stationary learning
+    - language model integration
+    - retrieval-augmented generation
+    - reranking
+    - sequence scoring
+    - decoding strategy
+    - preference optimization
+    - weak supervision
+    - posterior inference
+    - self-training
+    - pseudo-labeling
+    - diffusion model
+    - multimodal alignment
+    - cross-modal representation learning
+    - attention mechanism
+    - tokenization
+    - spatiotemporal modeling
+    - time series
+    - irregular time series
+    - foundation model
+    - scientific machine learning
+    - language model
+  negative_keywords:
+    - protein folding
+    - recommender system
+    - materials discovery
+    - web scraper
+    - vulnerability fixing
+    - tutoring system
+    - financial forecasting
+  arxiv_categories:
+    - cs.LG
+    - cs.AI
+    - cs.CL
+    - cs.CV
+    - cs.MM
+    - cs.IR
+    - cs.SD
+    - cs.NE
+    - eess.SP
+    - stat.ML
+  preferred_venues:
+    - NeurIPS
+    - ICML
+    - ICLR
+    - CVPR
+    - ICCV
+    - ECCV
+    - ACL
+    - EMNLP
+    - NAACL
+    - COLM
+    - TMLR
+    - AAAI
+    - IJCAI
+    - KDD
+    - WWW
+    - TheWebConf
+    - SIGIR
+
+sources:
+  arxiv:
+    enabled: true
+    lookback_days: 3
+    max_results: 200
+    retries: 0
+    retry_after_seconds: 20
+    html_fallback_enabled: true
+    max_api_failures_before_html: 1
+    html_fallback_per_category: 50
+    html_fallback_max_results: 100
+    html_fallback_sleep_seconds: 0.25
+  openreview:
+    enabled: true
+    venues:
+      - ICLR
+      - NeurIPS
+      - ICML
+      - TMLR
+      - COLM
+    max_results: 100
+
+output:
+  report_dir: reports
+  data_dir: data
+  log_dir: logs
+
+retrieval:
+  candidate_limit: 100

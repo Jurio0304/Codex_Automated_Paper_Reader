@@ -1,0 +1,34 @@
+# Private prompt files with machine-specific paths or preferences
+Paper_Reader.txt
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Virtual environments
+.venv/
+.venv-win/
+venv/
+env/
+paper-daily/.venv/
+paper-daily/.venv-win/
+
+# OS/editor files
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+
+# Runtime outputs
+paper-daily/logs/
+paper-daily/data/
+paper-daily/reports/
+
+# Temporary files
+*.tmp
+*.bak
+*.swp

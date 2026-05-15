@@ -1,0 +1,10 @@
+.DS_Store
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.venv/
+
+# Runtime outputs are intentionally generated locally.
+logs/
+data/
+reports/
